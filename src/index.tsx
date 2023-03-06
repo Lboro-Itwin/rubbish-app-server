@@ -9,7 +9,7 @@ import { BrowserAuthorizationCallbackHandler } from "@itwin/browser-authorizatio
 import React from "react";
 import ReactDOM from "react-dom";
 
-import App from "./GlobalDisplayApp";
+import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 
 if (!process.env.IMJS_AUTH_CLIENT_CLIENT_ID) {
