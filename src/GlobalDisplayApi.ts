@@ -31,29 +31,10 @@ export class GlobalDisplayApi {
     if (elevationOffset !== undefined)
       location.center.height = elevationOffset;
 
-    console.log("viewport", viewport);
-    console.log("imodel", viewport.iModel);
 
-    console.log("location", location);
-
-    //THIS MATCHES UP WITH THE LOCATION. NOW WE NEED TO CONVERT THIS INTO SOMETHING ELSE...
-    const cart = Cartographic.fromDegrees(
-      {
-        height: 124,
-        latitude: 52.7677,
-        longitude: -1.2238
-      }
-    );
-
-    //CONVERTED IT TO SOMETHING ELSE!!!
-    const spatial = await viewport.iModel.cartographicToSpatial(cart)
 
     // "Fly" to the location.
     await viewport.animateFlyoverToGlobalLocation(location);
-
-
-    console.log("view", JSON.parse(JSON.stringify(viewport.view)));
-
 
     return true;
   }
@@ -62,6 +43,27 @@ export class GlobalDisplayApi {
   // A view of Honolulu.
   public static readonly getInitialView = async (imodel: IModelConnection) => {
 
+    const lboroCoordinates = {
+
+      height: 124,
+      latitude: 52.7677,
+      longitude: -1.2238
+    };
+
+    console.log("Lboro Coordinates", lboroCoordinates)
+
+
+    //THIS MATCHES UP WITH THE LOCATION. NOW WE NEED TO CONVERT THIS INTO SOMETHING ELSE...
+    const cart = Cartographic.fromDegrees(
+      lboroCoordinates
+    );
+
+    console.log("Cartographic coordinates", cart);
+
+    //CONVERTED IT TO SOMETHING ELSE!!!
+    const spatial = await imodel.cartographicToSpatial(cart);
+
+    console.log("Spatial Coordinates", spatial);
 
     const viewDefinitionProps: SpatialViewDefinitionProps = {
       angles: {
