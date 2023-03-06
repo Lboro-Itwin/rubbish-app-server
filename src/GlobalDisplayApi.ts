@@ -2,16 +2,19 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { DisplayStyle3dProps, SpatialViewDefinitionProps } from "@itwin/core-common";
+import { Cartographic, DisplayStyle3dProps, SpatialViewDefinitionProps } from "@itwin/core-common";
 import { BingLocationProvider, IModelConnection, queryTerrainElevationOffset, ScreenViewport, SpatialViewState } from "@itwin/core-frontend";
+
 
 export class GlobalDisplayApi {
   private static _locationProvider?: BingLocationProvider;
+
 
   /** Provides conversion from a place name to a location on the Earth's surface. */
   public static get locationProvider(): BingLocationProvider {
     return this._locationProvider || (this._locationProvider = new BingLocationProvider());
   }
+
 
   /** Given a place name - whether a specific address or a more freeform description like "New Zealand", "Ol' Faithful", etc -
    * look up its location on the Earth and, if found, use a flyover animation to make the viewport display that location.
@@ -22,18 +25,30 @@ export class GlobalDisplayApi {
     if (!location)
       return false;
 
+
     // Determine the height of the Earth's surface at this location.
     const elevationOffset = await queryTerrainElevationOffset(viewport, location.center);
     if (elevationOffset !== undefined)
       location.center.height = elevationOffset;
+
+    localStorage.setItem("test", "test")
+
+    localStorage.setItem("location", JSON.stringify(location));
+    console.log("viewport", viewport);
+    console.log("imodel", viewport.iModel);
+
+    // const vpi = await viewport.iModel.cartographicToSpatialFromGcs(Cartographic.fromDegrees({ latitude: 52.7650, longitude: 1.2321, height: 30 }))
+    // localStorage.setItem('cartogrpahic to spatial', JSON.stringify(vpi));
 
     // "Fly" to the location.
     await viewport.animateFlyoverToGlobalLocation(location);
     return true;
   }
 
+
   // A view of Honolulu.
   public static readonly getInitialView = async (imodel: IModelConnection) => {
+
 
     const viewDefinitionProps: SpatialViewDefinitionProps = {
       angles: { pitch: 36.51434, roll: -152.05985, yaw: -7.09931 },
@@ -55,6 +70,7 @@ export class GlobalDisplayApi {
       modelSelectorId: "0x823",
       origin: [-276795.28703, -6029103.67946, -4310029.41901],
     };
+
 
     const displayStyleProps: DisplayStyle3dProps = {
       classFullName: "BisCore:DisplayStyle3d",
@@ -89,6 +105,7 @@ export class GlobalDisplayApi {
       },
     };
 
+
     return SpatialViewState.createFromProps({
       viewDefinitionProps,
       displayStyleProps,
@@ -109,4 +126,3 @@ export class GlobalDisplayApi {
     }, imodel);
   };
 }
-

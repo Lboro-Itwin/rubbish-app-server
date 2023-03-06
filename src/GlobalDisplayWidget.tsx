@@ -1,3 +1,4 @@
+
 /*---------------------------------------------------------------------------------------------
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
@@ -12,6 +13,7 @@ import { Alert, Button, IconButton, Input, Label, Text, ToggleSwitch } from "@it
 import { GlobalDisplayApi } from "./GlobalDisplayApi";
 import "./GlobalDisplay.scss";
 
+
 const GlobalDisplayWidget = () => {
   const viewport = useActiveViewport();
   /** Place name to which to travel. */
@@ -25,6 +27,7 @@ const GlobalDisplayWidget = () => {
   /** If buildings are displayed, also display their edges. */
   const [buildingEdges, setBuildingEdges] = useState<boolean>(true);
 
+
   useEffect(() => {
     if (viewport) {
       viewport.changeBackgroundMapProps({
@@ -34,11 +37,13 @@ const GlobalDisplayWidget = () => {
     }
   }, [viewport, terrain, mapLabels]);
 
+
   useEffect(() => {
     if (viewport) {
       viewport.displayStyle.setOSMBuildingDisplay({ onOff: buildings });
     }
   }, [viewport, buildings]);
+
 
   useEffect(() => {
     if (viewport) {
@@ -46,9 +51,11 @@ const GlobalDisplayWidget = () => {
     }
   }, [viewport, buildingEdges]);
 
+
   const _travelToDestination = async () => {
     if (!viewport)
       return;
+
 
     const locationFound = await GlobalDisplayApi.travelTo(viewport, destination);
     if (!locationFound) {
@@ -56,6 +63,7 @@ const GlobalDisplayWidget = () => {
       IModelApp.notifications.outputMessage(new NotifyMessageDetails(OutputMessagePriority.Warning, message));
     }
   };
+
 
   const _onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === SpecialKey.Enter || e.key === SpecialKey.Return) {
@@ -67,12 +75,14 @@ const GlobalDisplayWidget = () => {
     }
   };
 
+
   const infoLabel = (label: string, tooltip: string) => (
     <span className="toggle-label">
       <Text>{label}</Text>
       <IconButton size="small" styleType="borderless" title={tooltip}><SvgHelpCircularHollow /></IconButton>
     </span>
   );
+
 
   return (
     <div className="sample-container">
@@ -112,10 +122,13 @@ const GlobalDisplayWidget = () => {
     </div>
   );
 
+
 };
+
 
 export class GlobalDisplayWidgetProvider implements UiItemsProvider {
   public readonly id: string = "GlobalDisplayWidgetProvider";
+
 
   public provideWidgets(_stageId: string, _stageUsage: string, location: StagePanelLocation, _section?: StagePanelSection): ReadonlyArray<AbstractWidgetProps> {
     const widgets: AbstractWidgetProps[] = [];
