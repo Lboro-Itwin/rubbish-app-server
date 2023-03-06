@@ -1,17 +1,3 @@
-<<<<<<< HEAD
-## Running
-* Run with npm start
-
-## Finding the globe
-* turn off terrain
-* get close to the line
-* turn off flyover mode
-* snap to top view
-* pray
-
-## Known bugs
-* lots
-=======
 # Getting Started with the iTwin Viewer Create React App Template
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
@@ -102,4 +88,3 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 - [Using the iTwin Platform](https://developer.bentley.com/)
 
 - [iTwin Developer Program](https://www.youtube.com/playlist?list=PL6YCKeNfXXd_dXq4u9vtSFfsP3OTVcL8N)
->>>>>>> 6c33dc1 (Initialize project using Create React App)
