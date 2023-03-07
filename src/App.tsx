@@ -10,10 +10,13 @@ import { GlobalDisplayApi } from "./global-display/GlobalDisplayApi";
 import { GlobalDisplayWidgetProvider } from "./global-display/GlobalDisplayWidget";
 import { authClient } from "./common/AuthorizationClient";
 import { mapLayerOptions, tileAdminOptions } from "./common/MapLayerOptions";
+import { MarkerPinWidgetProvider } from "./markers/MarkerPinWidget";
+
 
 const uiProviders = [
   new GlobalDisplayWidgetProvider(),
   new ViewerNavigationToolsProvider(),
+  new MarkerPinWidgetProvider()
 ];
 const viewportOptions: ViewerViewportControlOptions = {
   viewState: async (iModelConnection) => {
