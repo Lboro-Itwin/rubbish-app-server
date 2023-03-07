@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { Cartographic, DisplayStyle3dProps, EcefLocation, SpatialViewDefinitionProps } from "@itwin/core-common";
+import { Cartographic, DisplayStyle3dProps, SpatialViewDefinitionProps } from "@itwin/core-common";
 import { BingLocationProvider, IModelConnection, queryTerrainElevationOffset, ScreenViewport, SpatialViewState } from "@itwin/core-frontend";
 
 

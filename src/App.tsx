@@ -6,8 +6,8 @@ import React, { useEffect } from "react";
 import { FrontstageManager } from "@itwin/appui-react";
 import { IModelApp, ScreenViewport } from "@itwin/core-frontend";
 import { Viewer, ViewerNavigationToolsProvider, ViewerViewportControlOptions } from "@itwin/web-viewer-react";
-import { GlobalDisplayApi } from "./GlobalDisplayApi";
-import { GlobalDisplayWidgetProvider } from "./GlobalDisplayWidget";
+import { GlobalDisplayApi } from "./global-display/GlobalDisplayApi";
+import { GlobalDisplayWidgetProvider } from "./global-display/GlobalDisplayWidget";
 import { authClient } from "./common/AuthorizationClient";
 import { mapLayerOptions, tileAdminOptions } from "./common/MapLayerOptions";
 
