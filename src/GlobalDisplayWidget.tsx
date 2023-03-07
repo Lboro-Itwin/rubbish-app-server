@@ -18,13 +18,13 @@ const GlobalDisplayWidget = () => {
   /** Place name to which to travel. */
   const [destination, setDestination] = useState<string>("");
   /** True for 3d terrain, false for a flat map. */
-  const [terrain, setTerrain] = useState<boolean>(true);
+  const [terrain, setTerrain] = useState<boolean>(false);
   /** Display map labels with the map imagery. */
   const [mapLabels, setMapLabels] = useState<boolean>(false);
   /** Display 3d building meshes from Open Street Map Buildings. */
-  const [buildings, setBuildings] = useState<boolean>(true);
+  const [buildings, setBuildings] = useState<boolean>(false);
   /** If buildings are displayed, also display their edges. */
-  const [buildingEdges, setBuildingEdges] = useState<boolean>(true);
+  const [buildingEdges, setBuildingEdges] = useState<boolean>(false);
 
   useEffect(() => {
     if (viewport) {
