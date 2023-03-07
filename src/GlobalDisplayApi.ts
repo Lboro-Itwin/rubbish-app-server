@@ -9,12 +9,10 @@ import { BingLocationProvider, IModelConnection, queryTerrainElevationOffset, Sc
 export class GlobalDisplayApi {
   private static _locationProvider?: BingLocationProvider;
 
-
   /** Provides conversion from a place name to a location on the Earth's surface. */
   public static get locationProvider(): BingLocationProvider {
     return this._locationProvider || (this._locationProvider = new BingLocationProvider());
   }
-
 
   /** Given a place name - whether a specific address or a more freeform description like "New Zealand", "Ol' Faithful", etc -
    * look up its location on the Earth and, if found, use a flyover animation to make the viewport display that location.
@@ -25,24 +23,19 @@ export class GlobalDisplayApi {
     if (!location)
       return false;
 
-
     // Determine the height of the Earth's surface at this location.
     const elevationOffset = await queryTerrainElevationOffset(viewport, location.center);
     if (elevationOffset !== undefined)
       location.center.height = elevationOffset;
 
-
-
     // "Fly" to the location.
     await viewport.animateFlyoverToGlobalLocation(location);
-
     return true;
   }
 
 
-  // A view of Honolulu.
+  // A view of Loughborough.
   public static readonly getInitialView = async (imodel: IModelConnection) => {
-
     const lboroCoordinates = {
 
       height: 124,
@@ -51,7 +44,6 @@ export class GlobalDisplayApi {
     };
 
     console.log("Lboro Coordinates", lboroCoordinates)
-
 
     //THIS MATCHES UP WITH THE LOCATION. NOW WE NEED TO CONVERT THIS INTO SOMETHING ELSE...
     const cart = Cartographic.fromDegrees(
@@ -64,6 +56,33 @@ export class GlobalDisplayApi {
     const spatial = await imodel.cartographicToSpatial(cart);
 
     console.log("Spatial Coordinates", spatial);
+
+    // // default view of Honolulu
+    // const viewDefinitionProps: SpatialViewDefinitionProps = {
+    //   angles: {
+    //     pitch: -36.643205292469226,
+    //     roll: 37.12167196850261,
+    //     yaw: -144.83810880560975
+    //   },
+    //   camera: {
+    //     eye: [-3811409.4645566414, 3097446.7986855856, -2300088.193305605],
+    //     focusDist: 2934.539280380516,
+    //     lens: 45.95389000000029,
+    //   },
+    //   cameraOn: true,
+    //   categorySelectorId: "0x825",
+    //   classFullName: "BisCore:SpatialViewDefinition",
+    //   code: { scope: "0x28", spec: "0x1c", value: "" },
+    //   description: "",
+    //   displayStyleId: "0x824",
+    //   extents: [2488.489369802362, 796.9769935851273, 2934.0403293819463],
+    //   id: "0x822",
+    //   isPrivate: false,
+    //   model: "0x28",
+    //   modelSelectorId: "0x823",
+    //   origin: [-3808657.7388691483, 3096163.2521303953, -2301136.515086659],
+    // };
+
 
     const viewDefinitionProps: SpatialViewDefinitionProps = {
       angles: {

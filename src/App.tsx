@@ -1,3 +1,7 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
 import React, { useEffect } from "react";
 import { FrontstageManager } from "@itwin/appui-react";
 import { IModelApp, ScreenViewport } from "@itwin/core-frontend";
@@ -6,7 +10,6 @@ import { GlobalDisplayApi } from "./GlobalDisplayApi";
 import { GlobalDisplayWidgetProvider } from "./GlobalDisplayWidget";
 import { authClient } from "./common/AuthorizationClient";
 import { mapLayerOptions, tileAdminOptions } from "./common/MapLayerOptions";
-import './App.scss';
 
 const uiProviders = [
   new GlobalDisplayWidgetProvider(),
@@ -18,7 +21,6 @@ const viewportOptions: ViewerViewportControlOptions = {
       // The grid just gets in the way - turn it off.
       viewport.viewFlags = viewport.view.viewFlags.with("grid", false);
 
-
       // We're not interested in seeing the contents of the iModel, only the global data.
       if (viewport.view.isSpatialView())
         viewport.view.modelSelector.models.clear();
@@ -27,17 +29,14 @@ const viewportOptions: ViewerViewportControlOptions = {
   },
 };
 
-
 const iTwinId = process.env.IMJS_ITWIN_ID;
 const iModelId = process.env.IMJS_IMODEL_ID;
-
 
 const GlobalDisplayApp = () => {
   /** Sign-in */
   useEffect(() => {
     void authClient.signIn();
   }, []);
-
 
   return <Viewer
     iTwinId={iTwinId ?? ""}
@@ -57,12 +56,10 @@ const GlobalDisplayApp = () => {
   />;
 };
 
-
 // Define panel size
 FrontstageManager.onFrontstageReadyEvent.addListener((event) => {
   const { bottomPanel } = event.frontstageDef;
   bottomPanel && (bottomPanel.size = 210);
 });
-
 
 export default GlobalDisplayApp;

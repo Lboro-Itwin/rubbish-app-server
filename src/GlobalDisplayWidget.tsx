@@ -1,11 +1,10 @@
-
 /*---------------------------------------------------------------------------------------------
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { useEffect, useState } from "react";
-import { AbstractWidgetProps, SpecialKey, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
-import { useActiveViewport } from "@itwin/appui-react";
+import { SpecialKey } from "@itwin/appui-abstract";
+import { useActiveViewport, CommonWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-react";
 import { BackgroundMapType } from "@itwin/core-common";
 import { IModelApp, NotifyMessageDetails, OutputMessagePriority } from "@itwin/core-frontend";
 import { SvgHelpCircularHollow } from "@itwin/itwinui-icons-react";
@@ -27,7 +26,6 @@ const GlobalDisplayWidget = () => {
   /** If buildings are displayed, also display their edges. */
   const [buildingEdges, setBuildingEdges] = useState<boolean>(true);
 
-
   useEffect(() => {
     if (viewport) {
       viewport.changeBackgroundMapProps({
@@ -37,13 +35,11 @@ const GlobalDisplayWidget = () => {
     }
   }, [viewport, terrain, mapLabels]);
 
-
   useEffect(() => {
     if (viewport) {
       viewport.displayStyle.setOSMBuildingDisplay({ onOff: buildings });
     }
   }, [viewport, buildings]);
-
 
   useEffect(() => {
     if (viewport) {
@@ -51,11 +47,9 @@ const GlobalDisplayWidget = () => {
     }
   }, [viewport, buildingEdges]);
 
-
   const _travelToDestination = async () => {
     if (!viewport)
       return;
-
 
     const locationFound = await GlobalDisplayApi.travelTo(viewport, destination);
     if (!locationFound) {
@@ -63,7 +57,6 @@ const GlobalDisplayWidget = () => {
       IModelApp.notifications.outputMessage(new NotifyMessageDetails(OutputMessagePriority.Warning, message));
     }
   };
-
 
   const _onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === SpecialKey.Enter || e.key === SpecialKey.Return) {
@@ -75,14 +68,12 @@ const GlobalDisplayWidget = () => {
     }
   };
 
-
   const infoLabel = (label: string, tooltip: string) => (
     <span className="toggle-label">
       <Text>{label}</Text>
       <IconButton size="small" styleType="borderless" title={tooltip}><SvgHelpCircularHollow /></IconButton>
     </span>
   );
-
 
   return (
     <div className="sample-container">
@@ -122,16 +113,13 @@ const GlobalDisplayWidget = () => {
     </div>
   );
 
-
 };
-
 
 export class GlobalDisplayWidgetProvider implements UiItemsProvider {
   public readonly id: string = "GlobalDisplayWidgetProvider";
 
-
-  public provideWidgets(_stageId: string, _stageUsage: string, location: StagePanelLocation, _section?: StagePanelSection): ReadonlyArray<AbstractWidgetProps> {
-    const widgets: AbstractWidgetProps[] = [];
+  public provideWidgets(_stageId: string, _stageUsage: string, location: StagePanelLocation, _section?: StagePanelSection): ReadonlyArray<CommonWidgetProps> {
+    const widgets: CommonWidgetProps[] = [];
     if (location === StagePanelLocation.Bottom) {
       widgets.push(
         {
