@@ -2,19 +2,17 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { Cartographic, DisplayStyle3dProps, SpatialViewDefinitionProps } from "@itwin/core-common";
+import { Cartographic, DisplayStyle3dProps, EcefLocation, SpatialViewDefinitionProps } from "@itwin/core-common";
 import { BingLocationProvider, IModelConnection, queryTerrainElevationOffset, ScreenViewport, SpatialViewState } from "@itwin/core-frontend";
 
 
 export class GlobalDisplayApi {
   private static _locationProvider?: BingLocationProvider;
 
-
   /** Provides conversion from a place name to a location on the Earth's surface. */
   public static get locationProvider(): BingLocationProvider {
     return this._locationProvider || (this._locationProvider = new BingLocationProvider());
   }
-
 
   /** Given a place name - whether a specific address or a more freeform description like "New Zealand", "Ol' Faithful", etc -
    * look up its location on the Earth and, if found, use a flyover animation to make the viewport display that location.
@@ -25,20 +23,10 @@ export class GlobalDisplayApi {
     if (!location)
       return false;
 
-
     // Determine the height of the Earth's surface at this location.
     const elevationOffset = await queryTerrainElevationOffset(viewport, location.center);
     if (elevationOffset !== undefined)
       location.center.height = elevationOffset;
-
-    localStorage.setItem("test", "test")
-
-    localStorage.setItem("location", JSON.stringify(location));
-    console.log("viewport", viewport);
-    console.log("imodel", viewport.iModel);
-
-    // const vpi = await viewport.iModel.cartographicToSpatialFromGcs(Cartographic.fromDegrees({ latitude: 52.7650, longitude: 1.2321, height: 30 }))
-    // localStorage.setItem('cartogrpahic to spatial', JSON.stringify(vpi));
 
     // "Fly" to the location.
     await viewport.animateFlyoverToGlobalLocation(location);
@@ -46,16 +34,66 @@ export class GlobalDisplayApi {
   }
 
 
-  // A view of Honolulu.
+  // A view of Loughborough.
   public static readonly getInitialView = async (imodel: IModelConnection) => {
+    const lboroCoordinates = {
+
+      height: 124,
+      latitude: 52.7677,
+      longitude: -1.2238
+    };
+
+    console.log("Lboro Coordinates", lboroCoordinates)
+
+    //THIS MATCHES UP WITH THE LOCATION. NOW WE NEED TO CONVERT THIS INTO SOMETHING ELSE...
+    const cart = Cartographic.fromDegrees(
+      lboroCoordinates
+    );
+
+    console.log("Cartographic coordinates", cart);
+
+    //CONVERTED IT TO SOMETHING ELSE!!!
+    const spatial = await imodel.cartographicToSpatial(cart);
+
+    console.log("Spatial Coordinates", spatial);
+
+    // // default view of Honolulu
+    // const viewDefinitionProps: SpatialViewDefinitionProps = {
+    //   angles: {
+    //     pitch: -36.643205292469226,
+    //     roll: 37.12167196850261,
+    //     yaw: -144.83810880560975
+    //   },
+    //   camera: {
+    //     eye: [-3811409.4645566414, 3097446.7986855856, -2300088.193305605],
+    //     focusDist: 2934.539280380516,
+    //     lens: 45.95389000000029,
+    //   },
+    //   cameraOn: true,
+    //   categorySelectorId: "0x825",
+    //   classFullName: "BisCore:SpatialViewDefinition",
+    //   code: { scope: "0x28", spec: "0x1c", value: "" },
+    //   description: "",
+    //   displayStyleId: "0x824",
+    //   extents: [2488.489369802362, 796.9769935851273, 2934.0403293819463],
+    //   id: "0x822",
+    //   isPrivate: false,
+    //   model: "0x28",
+    //   modelSelectorId: "0x823",
+    //   origin: [-3808657.7388691483, 3096163.2521303953, -2301136.515086659],
+    // };
 
 
     const viewDefinitionProps: SpatialViewDefinitionProps = {
-      angles: { pitch: 36.51434, roll: -152.05985, yaw: -7.09931 },
+      angles: {
+        pitch: -36.643205292469226,
+        roll: 37.12167196850261,
+        yaw: -144.83810880560975
+      },
       camera: {
-        eye: [-275742.30015, -6029894.49473, -4310387.86741],
-        focusDist: 1178.36256,
-        lens: 45.95389,
+        eye: [-3811409.4645566414, 3097446.7986855856, -2300088.193305605],
+        focusDist: 2934.539280380516,
+        lens: 45.95389000000029,
       },
       cameraOn: true,
       categorySelectorId: "0x825",
@@ -63,12 +101,12 @@ export class GlobalDisplayApi {
       code: { scope: "0x28", spec: "0x1c", value: "" },
       description: "",
       displayStyleId: "0x824",
-      extents: [999.2514809355691, 945.1192630810807, 1178.3625627420267],
+      extents: [2488.489369802362, 796.9769935851273, 2934.0403293819463],
       id: "0x822",
       isPrivate: false,
       model: "0x28",
       modelSelectorId: "0x823",
-      origin: [-276795.28703, -6029103.67946, -4310029.41901],
+      origin: [-3808657.7388691483, 3096163.2521303953, -2301136.515086659],
     };
 
 

@@ -15,10 +15,10 @@ export const mapLayerOptions: MapLayerOptions = {
   },
 
   // Access token for Map Box service. For more information: https://docs.mapbox.com/help/getting-started/access-tokens
-  MapboxImagery: {
-    key: "access_token",
-    value: process.env.IMJS_MAP_BOX_KEY || "",
-  },
+  // MapboxImagery: {
+  //   key: "access_token",
+  //   value: process.env.IMJS_MAP_BOX_KEY || "",
+  // },
 };
 
 // Access token for Cesium service. For more information: https://cesium.com/learn/ion/cesium-ion-access-tokens
