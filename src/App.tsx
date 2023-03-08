@@ -12,11 +12,13 @@ import { authClient } from "./common/AuthorizationClient";
 import { mapLayerOptions, tileAdminOptions } from "./common/MapLayerOptions";
 import { MarkerPinWidgetProvider } from "./markers/MarkerPinWidget";
 
+
 const uiProviders = [
   new GlobalDisplayWidgetProvider(),
   new ViewerNavigationToolsProvider(),
   new MarkerPinWidgetProvider()
 ];
+
 const viewportOptions: ViewerViewportControlOptions = {
   viewState: async (iModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce((viewport: ScreenViewport) => {
@@ -39,7 +41,6 @@ const App = () => {
   useEffect(() => {
     void authClient.signIn();
   }, []);
-
 
   return <Viewer
     iTwinId={iTwinId ?? ""}

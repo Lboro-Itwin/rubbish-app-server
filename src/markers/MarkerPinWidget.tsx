@@ -6,11 +6,10 @@ import React, { useEffect } from "react";
 import { useActiveViewport, CommonWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-react";
 import { imageElementFromUrl, IModelApp } from "@itwin/core-frontend";
 import { Point3d, Range2d } from "@itwin/core-geometry";
-import { Alert, Button, Fieldset, RadioTile, RadioTileGroup, ToggleSwitch } from "@itwin/itwinui-react";
+import { Alert, ToggleSwitch } from "@itwin/itwinui-react";
 import { MarkerData, MarkerPinDecorator } from "../common/marker-pin/MarkerPinDecorator";
 import { PlaceMarkerTool } from "../common/marker-pin/PlaceMarkerTool";
 import { PopupMenu } from "../common/marker-pin/PopupMenu";
-import { PointSelector } from "../common/point-selector/PointSelector";
 import MarkerPinApi from "./MarkerPinApi";
 import "./MarkerPin.scss";
 import { supabase } from "../db";
@@ -32,7 +31,6 @@ const MarkerPinWidget = () => {
   const viewport = useActiveViewport();
   const [imagesLoadedState, setImagesLoadedState] = React.useState<boolean>(false);
   const [showDecoratorState, setShowDecoratorState] = React.useState<boolean>(true);
-  const [manualPinState, setManualPinState] = React.useState<ManualPinSelection>(manualPinSelections[0]);
   const [markersDataState, setMarkersDataState] = React.useState<MarkerData[]>([]);
   const [rangeState, setRangeState] = React.useState<Range2d>(Range2d.createNull());
   const [heightState, setHeightState] = React.useState<number>(0);
@@ -103,7 +101,6 @@ const MarkerPinWidget = () => {
   useEffect(() => {
     const fetchData = async () => {
 
-
       if (viewport) {
 
         const convertToSpatial = async (val: { long: number, lat: number }) => {
@@ -130,6 +127,7 @@ const MarkerPinWidget = () => {
           .channel('any')
           .on('postgres_changes', { event: '*', schema: 'public', table: 'coords2' }, payload => {
             // should work for new items
+            console.warn("Data channel from supabase has been updated", payload)
             updateMarkers([...markersDataState, payload.new])
           })
           .subscribe()
@@ -140,7 +138,7 @@ const MarkerPinWidget = () => {
       }
     }
 
-    fetchData().catch(console.error)
+    Promise.resolve(fetchData()).catch(console.error)
 
   }, []);
 
@@ -159,54 +157,11 @@ const MarkerPinWidget = () => {
     setHeightState(height);
   };
 
-  /** This callback will be executed when the user interacts with the PointSelector
-   * UI component.  It is also called once when the component initializes.
-   */
-  const _onPointsChanged = async (points: Point3d[]): Promise<void> => {
-    const markersData: MarkerData[] = [];
-    for (const point of points) {
-      point.z = heightState;
-      markersData.push({ point });
-    }
-    // console.log(markersData)
-    setMarkersDataState(markersData);
-  };
-
-  /** This callback will be executed by the PlaceMarkerTool when it is time to create a new marker */
-  const _manuallyAddMarker = (point: Point3d) => {
-    MarkerPinApi.addMarkerPoint(markerPinDecorator, point, MarkerPinApi._images.get(manualPinState.image)!);
-  };
-
-  /** This callback will be executed when the user clicks the UI button.  It will start the tool which
-   * handles further user input.
-   */
-  const _onStartPlaceMarkerTool = () => {
-    void IModelApp.tools.run(PlaceMarkerTool.toolId, _manuallyAddMarker);
-  };
-
   // Display drawing and sheet options in separate sections.
   return (
     <div className="sample-options">
       <ToggleSwitch className="show-markers" label="Show markers" labelPosition="right" checked={showDecoratorState} onChange={() => setShowDecoratorState(!showDecoratorState)} />
 
-      <div className="sample-grid">
-        <Fieldset legend="Manual placement" className="manual-placement">
-          <RadioTileGroup>
-            {manualPinSelections.map((pin, index) =>
-              <RadioTile
-                key={index}
-                icon={<img src={pin.image} alt="pin symbol" />}
-                checked={manualPinState.name === pin.name}
-                onChange={() => setManualPinState(pin)}
-              />)}
-          </RadioTileGroup>
-          <Button
-            styleType="high-visibility"
-            className="manual-placement-btn"
-            onClick={_onStartPlaceMarkerTool}
-            title="Click here and then click the view to place a new marker">Place Marker</Button>
-        </Fieldset>
-      </div>
       <Alert type="informational" className="instructions">
         Use the options to control the marker pins. Click a marker to open a menu of options.
       </Alert>
