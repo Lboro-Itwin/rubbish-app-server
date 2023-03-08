@@ -12,7 +12,6 @@ import { authClient } from "./common/AuthorizationClient";
 import { mapLayerOptions, tileAdminOptions } from "./common/MapLayerOptions";
 import { MarkerPinWidgetProvider } from "./markers/MarkerPinWidget";
 
-
 const uiProviders = [
   new GlobalDisplayWidgetProvider(),
   new ViewerNavigationToolsProvider(),
@@ -35,11 +34,12 @@ const viewportOptions: ViewerViewportControlOptions = {
 const iTwinId = process.env.IMJS_ITWIN_ID;
 const iModelId = process.env.IMJS_IMODEL_ID;
 
-const GlobalDisplayApp = () => {
+const App = () => {
   /** Sign-in */
   useEffect(() => {
     void authClient.signIn();
   }, []);
+
 
   return <Viewer
     iTwinId={iTwinId ?? ""}
@@ -65,4 +65,4 @@ FrontstageManager.onFrontstageReadyEvent.addListener((event) => {
   bottomPanel && (bottomPanel.size = 210);
 });
 
-export default GlobalDisplayApp;
+export default App;

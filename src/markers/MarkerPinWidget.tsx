@@ -13,6 +13,8 @@ import { PopupMenu } from "../common/marker-pin/PopupMenu";
 import { PointSelector } from "../common/point-selector/PointSelector";
 import MarkerPinApi from "./MarkerPinApi";
 import "./MarkerPin.scss";
+import { supabase } from "../db";
+import { Cartographic } from "@itwin/core-common";
 
 interface ManualPinSelection {
   name: string;
@@ -98,6 +100,50 @@ const MarkerPinWidget = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [markersDataState]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+
+
+      if (viewport) {
+
+        const convertToSpatial = async (val: { long: number, lat: number }) => {
+
+          const cart = Cartographic.fromDegrees(
+            { latitude: val.lat, longitude: val.long, height: 0 }
+          );
+
+          return await viewport.iModel.cartographicToSpatial(cart);
+        }
+
+        const updateMarkers = async (arr: { [x: string]: any }[] | null) => {
+          if (arr) {
+            const markersData: MarkerData[] = [];
+            for (const pos of arr ?? []) {
+              const point = await convertToSpatial({ long: pos.long, lat: pos.lat });
+              markersData.push({ point })
+            }
+            setMarkersDataState(markersData);
+          }
+        }
+
+        supabase
+          .channel('any')
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'coords2' }, payload => {
+            // should work for new items
+            updateMarkers([...markersDataState, payload.new])
+          })
+          .subscribe()
+
+        const query = await supabase.from('coords2').select();
+
+        await updateMarkers(query.data);
+      }
+    }
+
+    fetchData().catch(console.error)
+
+  }, []);
+
   const viewInit = () => {
     if (!viewport)
       return;
@@ -105,8 +151,6 @@ const MarkerPinWidget = () => {
     // Grab range of the contents of the view. We'll use this to position the random markers.
     const range3d = viewport.view.computeFitRange();
     const range = Range2d.createFrom(range3d);
-
-    localStorage.setItem("view", JSON.stringify(viewport.view));
 
     // Grab the max Z for the view contents.  We'll use this as the plane for the auto-generated markers. */
     const height = range3d.zHigh;
@@ -124,7 +168,7 @@ const MarkerPinWidget = () => {
       point.z = heightState;
       markersData.push({ point });
     }
-    localStorage.setItem("marker stuff", JSON.stringify(markersData));
+    // console.log(markersData)
     setMarkersDataState(markersData);
   };
 
@@ -146,9 +190,6 @@ const MarkerPinWidget = () => {
       <ToggleSwitch className="show-markers" label="Show markers" labelPosition="right" checked={showDecoratorState} onChange={() => setShowDecoratorState(!showDecoratorState)} />
 
       <div className="sample-grid">
-        <Fieldset legend="Auto-generate locations" className="point-cloud">
-          <PointSelector onPointsChanged={_onPointsChanged} range={rangeState} />
-        </Fieldset>
         <Fieldset legend="Manual placement" className="manual-placement">
           <RadioTileGroup>
             {manualPinSelections.map((pin, index) =>
