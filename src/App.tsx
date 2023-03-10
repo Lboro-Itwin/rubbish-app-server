@@ -6,15 +6,19 @@ import React, { useEffect } from "react";
 import { FrontstageManager } from "@itwin/appui-react";
 import { IModelApp, ScreenViewport } from "@itwin/core-frontend";
 import { Viewer, ViewerNavigationToolsProvider, ViewerViewportControlOptions } from "@itwin/web-viewer-react";
-import { GlobalDisplayApi } from "./GlobalDisplayApi";
-import { GlobalDisplayWidgetProvider } from "./GlobalDisplayWidget";
+import { GlobalDisplayApi } from "./global-display/GlobalDisplayApi";
+import { GlobalDisplayWidgetProvider } from "./global-display/GlobalDisplayWidget";
 import { authClient } from "./common/AuthorizationClient";
 import { mapLayerOptions, tileAdminOptions } from "./common/MapLayerOptions";
+import { MarkerPinWidgetProvider } from "./markers/MarkerPinWidget";
+
 
 const uiProviders = [
   new GlobalDisplayWidgetProvider(),
   new ViewerNavigationToolsProvider(),
+  new MarkerPinWidgetProvider()
 ];
+
 const viewportOptions: ViewerViewportControlOptions = {
   viewState: async (iModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce((viewport: ScreenViewport) => {
@@ -32,7 +36,7 @@ const viewportOptions: ViewerViewportControlOptions = {
 const iTwinId = process.env.IMJS_ITWIN_ID;
 const iModelId = process.env.IMJS_IMODEL_ID;
 
-const GlobalDisplayApp = () => {
+const App = () => {
   /** Sign-in */
   useEffect(() => {
     void authClient.signIn();
@@ -62,4 +66,4 @@ FrontstageManager.onFrontstageReadyEvent.addListener((event) => {
   bottomPanel && (bottomPanel.size = 210);
 });
 
-export default GlobalDisplayApp;
+export default App;

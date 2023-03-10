@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { Cartographic, DisplayStyle3dProps, EcefLocation, SpatialViewDefinitionProps } from "@itwin/core-common";
+import { DisplayStyle3dProps, SpatialViewDefinitionProps } from "@itwin/core-common";
 import { BingLocationProvider, IModelConnection, queryTerrainElevationOffset, ScreenViewport, SpatialViewState } from "@itwin/core-frontend";
 
 
@@ -36,53 +36,6 @@ export class GlobalDisplayApi {
 
   // A view of Loughborough.
   public static readonly getInitialView = async (imodel: IModelConnection) => {
-    const lboroCoordinates = {
-
-      height: 124,
-      latitude: 52.7677,
-      longitude: -1.2238
-    };
-
-    console.log("Lboro Coordinates", lboroCoordinates)
-
-    //THIS MATCHES UP WITH THE LOCATION. NOW WE NEED TO CONVERT THIS INTO SOMETHING ELSE...
-    const cart = Cartographic.fromDegrees(
-      lboroCoordinates
-    );
-
-    console.log("Cartographic coordinates", cart);
-
-    //CONVERTED IT TO SOMETHING ELSE!!!
-    const spatial = await imodel.cartographicToSpatial(cart);
-
-    console.log("Spatial Coordinates", spatial);
-
-    // // default view of Honolulu
-    // const viewDefinitionProps: SpatialViewDefinitionProps = {
-    //   angles: {
-    //     pitch: -36.643205292469226,
-    //     roll: 37.12167196850261,
-    //     yaw: -144.83810880560975
-    //   },
-    //   camera: {
-    //     eye: [-3811409.4645566414, 3097446.7986855856, -2300088.193305605],
-    //     focusDist: 2934.539280380516,
-    //     lens: 45.95389000000029,
-    //   },
-    //   cameraOn: true,
-    //   categorySelectorId: "0x825",
-    //   classFullName: "BisCore:SpatialViewDefinition",
-    //   code: { scope: "0x28", spec: "0x1c", value: "" },
-    //   description: "",
-    //   displayStyleId: "0x824",
-    //   extents: [2488.489369802362, 796.9769935851273, 2934.0403293819463],
-    //   id: "0x822",
-    //   isPrivate: false,
-    //   model: "0x28",
-    //   modelSelectorId: "0x823",
-    //   origin: [-3808657.7388691483, 3096163.2521303953, -2301136.515086659],
-    // };
-
 
     const viewDefinitionProps: SpatialViewDefinitionProps = {
       angles: {
