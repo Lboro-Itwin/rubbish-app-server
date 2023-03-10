@@ -5,7 +5,7 @@
 import React, { useEffect } from "react";
 import { useActiveViewport, CommonWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-react";
 import { imageElementFromUrl, IModelApp } from "@itwin/core-frontend";
-import { Point3d, Range2d } from "@itwin/core-geometry";
+// import { Range2d } from "@itwin/core-geometry";
 import { Alert, ToggleSwitch } from "@itwin/itwinui-react";
 import { MarkerData, MarkerPinDecorator } from "../common/marker-pin/MarkerPinDecorator";
 import { PlaceMarkerTool } from "../common/marker-pin/PlaceMarkerTool";
@@ -15,25 +15,11 @@ import "./MarkerPin.scss";
 import { supabase } from "../db";
 import { Cartographic } from "@itwin/core-common";
 
-interface ManualPinSelection {
-  name: string;
-  image: string;
-}
-
-/** A static array of pin images. */
-const manualPinSelections: ManualPinSelection[] = [
-  { image: "pin_google_maps.svg", name: "Google Pin" },
-  { image: "pin_celery.svg", name: "Celery Pin" },
-  { image: "pin_poloblue.svg", name: "Polo blue Pin" },
-];
-
 const MarkerPinWidget = () => {
   const viewport = useActiveViewport();
   const [imagesLoadedState, setImagesLoadedState] = React.useState<boolean>(false);
   const [showDecoratorState, setShowDecoratorState] = React.useState<boolean>(true);
   const [markersDataState, setMarkersDataState] = React.useState<MarkerData[]>([]);
-  const [rangeState, setRangeState] = React.useState<Range2d>(Range2d.createNull());
-  const [heightState, setHeightState] = React.useState<number>(0);
   const [markerPinDecorator] = React.useState<MarkerPinDecorator>(() => {
     return MarkerPinApi.setupDecorator();
   });
@@ -117,6 +103,7 @@ const MarkerPinWidget = () => {
             const markersData: MarkerData[] = [];
             for (const pos of arr ?? []) {
               const point = await convertToSpatial({ long: pos.long, lat: pos.lat });
+              // point.z = heightState;
               markersData.push({ point })
             }
             setMarkersDataState(markersData);
@@ -140,21 +127,21 @@ const MarkerPinWidget = () => {
 
     Promise.resolve(fetchData()).catch(console.error)
 
-  }, []);
+  }, [markersDataState, viewport]);
 
   const viewInit = () => {
     if (!viewport)
       return;
 
     // Grab range of the contents of the view. We'll use this to position the random markers.
-    const range3d = viewport.view.computeFitRange();
-    const range = Range2d.createFrom(range3d);
+    // const range3d = viewport.view.computeFitRange();
+    // const range = Range2d.createFrom(range3d);
 
     // Grab the max Z for the view contents.  We'll use this as the plane for the auto-generated markers. */
-    const height = range3d.zHigh;
+    // const height = range3d.zHigh;
 
-    setRangeState(range);
-    setHeightState(height);
+    // setRangeState(range);
+    // setHeightState(height);
   };
 
   // Display drawing and sheet options in separate sections.
